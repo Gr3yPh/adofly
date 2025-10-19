@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            text-align: center;
+        }
+    </style>
+    <title>Adofly 0.1</title>
+</head>
+
+<body>
+    <canvas id="gameCanvas" width="800" height="500" style="background-color: black;">
+    </canvas>
+
+    <script>
+        var angle = 0;
+        var bpm = 200;
+        var isPlaying = true;
+        var angleData = [0, 0, 0, 0, 0];
+        var ballColor1 = 'red';
+        var ballColor2 = 'blue';
+        var counterclock = false;
+        var x_start = 400 - 25;
+        var y_start = 250;
+        var current_rail = 0;
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function drawRails() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.strokeStyle = '#fca607';
+            ctx.lineWidth = 25;
+            var x = x_start;
+            var y = y_start;
+            var currentAngle = 0;
+            angleData.forEach(railAngle => {
+                drawLineAngle(currentAngle, x, y, 25);
+                x = x - len * Math.cos(currentAngle);
+                y = y - len * Math.sin(currentAngle);
+                drawLineAngle(railAngle, x, y, 25);
+                x = x - len * Math.cos(railAngle);
+                y = y - len * Math.sin(railAngle);
+                //ctx.moveTo(x + 2, y);
+                //ctx.lineTo(x + 50 - 2, y);
+                //x += 50;
+                currentAngle=railAngle;
+            });
+            ctx.stroke();
+
+        }
+
+        function drawLineAngle(angle, x_begin, y_begin, len) {
+            angle = angle / 180 * Math.PI;
+            x_end = x_begin - len * Math.cos(angle);
+            y_end = y_begin - len * Math.sin(angle);
+            ctx.lineTo(x_end, y_end);
+        }
+
+        function drawBalls() {
+            ctx.beginPath();
+            ctx.arc(400, 250, 13, 0, Math.PI * 2);
+            ctx.fillStyle = ballColor1;
+            ctx.fill();
+
+            ctx.beginPath();
+            if (!counterclock) {
+                ctx.arc(400 - 50 * Math.cos(angle), 250 - 50 * Math.sin(angle), 13, 0, Math.PI * 2);
+            }
+            else {
+                ctx.arc(400 - 50 * Math.cos(angle), 250 + 50 * Math.sin(angle), 13, 0, Math.PI * 2);
+            }
+            ctx.fillStyle = ballColor2;
+            ctx.fill();
+        }
+
+        function ballLoop() {
+            if (!isPlaying) return;
+            angle += Math.PI / 180 * 10;
+            drawRails();
+            drawBalls();
+            setTimeout(ballLoop, 10000 / (3 * bpm));
+        }
+        document.addEventListener('keydown', function (event) {
+            switchBall();
+        });
+        canvas.addEventListener('click', function (event) { switchBall(); })
+        function switchBall() {
+            if (current_rail > angleData.length - 2) return;
+            if (ballColor1 == 'red') {
+                ballColor1 = 'blue';
+                ballColor2 = 'red';
+            } else {
+                ballColor1 = 'red';
+                ballColor2 = 'blue';
+            }
+            x_start -= 50;
+            angle = 0;
+            current_rail += 1;
+        }
+
+        ballLoop();
+
+    </script>
+</body>
+
+</html>
