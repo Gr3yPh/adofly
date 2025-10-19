@@ -19,7 +19,7 @@
         var angle = 0;
         var bpm = 200;
         var isPlaying = true;
-        var angleData = [0, 0, 0, 0, 0];
+        var angleData = [0, 0,135, 0, 0, 0];
         var ballColor1 = 'red';
         var ballColor2 = 'blue';
         var counterclock = false;
@@ -39,12 +39,13 @@
             var y = y_start;
             var currentAngle = 0;
             angleData.forEach(railAngle => {
+                ctx.moveTo(x,y);
                 drawLineAngle(currentAngle, x, y, 25);
-                x = x - len * Math.cos(currentAngle);
-                y = y - len * Math.sin(currentAngle);
+                x = x + 25 * Math.cos(currentAngle/180*Math.PI);
+                y = y - 25 * Math.sin(currentAngle/180*Math.PI);
                 drawLineAngle(railAngle, x, y, 25);
-                x = x - len * Math.cos(railAngle);
-                y = y - len * Math.sin(railAngle);
+                x = x + 25 * Math.cos(railAngle/180*Math.PI);
+                y = y - 25 * Math.sin(railAngle/180*Math.PI);
                 //ctx.moveTo(x + 2, y);
                 //ctx.lineTo(x + 50 - 2, y);
                 //x += 50;
@@ -56,7 +57,7 @@
 
         function drawLineAngle(angle, x_begin, y_begin, len) {
             angle = angle / 180 * Math.PI;
-            x_end = x_begin - len * Math.cos(angle);
+            x_end = x_begin + len * Math.cos(angle);
             y_end = y_begin - len * Math.sin(angle);
             ctx.lineTo(x_end, y_end);
         }
@@ -98,8 +99,9 @@
                 ballColor1 = 'red';
                 ballColor2 = 'blue';
             }
-            x_start -= 50;
-            angle = 0;
+            x_start -= Math.cos(angleData[current_rail]/180*Math.PI)*50;
+            y_start+=Math.sin(angleData[current_rail]/180*Math.PI)*50;
+            angle = -angleData[current_rail];
             current_rail += 1;
         }
 
