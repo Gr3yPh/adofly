@@ -36,7 +36,10 @@
 
         const reversion = new Image();
         reversion.src = 'image/counterclock.png';
-
+        const rabbit = new Image();
+        rabbit.src = 'image/rabbit.png';
+        const snail = new Image();
+        snail.src = 'image/snail.png';
 
         function drawRails() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -71,14 +74,26 @@
                     if (currentRail == item.floor) {
                         if (item.eventType == 'Twirl') {
                             ctx.drawImage(reversion, x - 13, y - 13, 25, 25);
+                        } else if (item.eventType = 'SetSpeed') {
+                            if (item.speedType == 'Multiplier') {
+                                if (item.bpmMultiplier > 1) {
+                                    ctx.drawImage(rabbit, x - 13, y - 13, 25, 25);
+                                }
+                                else {
+                                    ctx.drawImage(snail, x - 13, y - 13, 25, 25);
+                                }
+                            }else{
+                                if(item.beatsPerMinute>bpm){
+                                    ctx.drawImage(rabbit, x - 13, y - 13, 25, 25);
+                                }else{
+                                    ctx.drawImage(snail, x - 13, y - 13, 25, 25);
+                                }
+                            }
                         }
                     }
                 })
                 x = x + 25 * Math.cos(railAngle / 180 * Math.PI);
                 y = y - 25 * Math.sin(railAngle / 180 * Math.PI);
-                //ctx.moveTo(x + 2, y);
-                //ctx.lineTo(x + 50 - 2, y);
-                //x += 50;
                 currentAngle = railAngle;
                 currentRail++;
             });
@@ -135,10 +150,16 @@
             actions.forEach(function (item) {
                 if (current_rail == item.floor) {
                     if (item.eventType == 'Twirl') {
-                        if(counterclock){
-                            counterclock=false;
+                        if (counterclock) {
+                            counterclock = false;
+                        } else {
+                            counterclock = true;
+                        }
+                    }else if(item.eventType=='SetSpeed'){
+                        if(item.speedType=='Multiplier'){
+                            bpm=bpm*item.bpmMultiplier;
                         }else{
-                            counterclock=true;
+                            bpm=item.beatsPerMinute;
                         }
                     }
                 }
