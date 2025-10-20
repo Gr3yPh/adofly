@@ -4,8 +4,15 @@
 <head>
     <meta charset="utf-8">
     <style>
+        @font-face {
+            font-family: NaiKaiFont;
+            src: url('NaiKaiFont.ttf');
+        }
         body {
             text-align: center;
+        }
+        *{
+            font-family: NaiKaiFont;
         }
     </style>
     <title>Adofly 0.1</title>
@@ -16,7 +23,7 @@
     </canvas>
 
     <script>
-        var angle = 0;
+        var angle = 180;
         var bpm = 80;
         var isReady = false;
         var isPlaying = false;
@@ -147,26 +154,26 @@
                 angle += Math.PI / 180 * 10;
                 drawRails();
                 drawBalls();
-                if (Date.now() - start_time <= 1000) {
-                    ctx.font = '50px sans-serif';
+                if (Date.now() - start_time <= 1000*(60/bpm)) {
+                    ctx.font = '50px NaiKaiFont';
                     ctx.fillStyle = 'white';
                     ctx.textAlign = 'center';
                     ctx.baseLine = 'middle';
                     ctx.fillText('3', 400, 250);
-                } else if(Date.now() - start_time <= 2000){
-                    ctx.font = '50px sans-serif';
+                } else if(Date.now() - start_time <= 2000*(60/bpm)){
+                    ctx.font = '50px NaiKaiFont';
                     ctx.fillStyle = 'white';
                     ctx.textAlign = 'center';
                     ctx.baseLine = 'middle';
                     ctx.fillText('2', 400, 250);
-                } else if(Date.now() - start_time <= 3000){
-                    ctx.font = '50px sans-serif';
+                } else if(Date.now() - start_time <= 3000*(60/bpm)){
+                    ctx.font = '50px NaiKaiFont';
                     ctx.fillStyle = 'white';
                     ctx.textAlign = 'center';
                     ctx.baseLine = 'middle';
                     ctx.fillText('1', 400, 250);
-                } else if(Date.now() - start_time <= 4000){
-                    ctx.font = '50px sans-serif';
+                } else if(Date.now() - start_time <= 4000*(60/bpm)){
+                    ctx.font = '50px NaiKaiFont';
                     ctx.fillStyle = 'white';
                     ctx.textAlign = 'center';
                     ctx.baseLine = 'middle';
@@ -175,7 +182,7 @@
                     isPlaying = true;
                 }
             } else {
-                ctx.font = '50px sans-serif';
+                ctx.font = '50px NaiKaiFont';
                 ctx.fillStyle = 'white';
                 ctx.textAlign = 'center';
                 ctx.baseLine = 'middle';
