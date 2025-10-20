@@ -19,16 +19,24 @@
         var angle = 0;
         var bpm = 200;
         var isPlaying = true;
-        var angleData = [0, 0,135, 0, 0, 0];
+        var angleData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 90, 0, 0, 135, 0];
         var ballColor1 = 'red';
         var ballColor2 = 'blue';
         var counterclock = false;
         var x_start = 400 - 25;
         var y_start = 250;
         var current_rail = 0;
-
+        var actions = [
+            { "floor": 3, "eventType": "Twirl" },
+            { "floor": 4, "eventType": "Twirl" },
+            { "floor": 6, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": 2, "angleOffset": 0 }
+        ];
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+
+        const reversion = new Image();
+        reversion.src = 'image/counterclock.png';
+
 
         function drawRails() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -38,21 +46,42 @@
             var x = x_start;
             var y = y_start;
             var currentAngle = 0;
+            var currentRail = 0;
             angleData.forEach(railAngle => {
-                ctx.moveTo(x,y);
+                ctx.moveTo(x, y);
                 drawLineAngle(currentAngle, x, y, 25);
-                x = x + 25 * Math.cos(currentAngle/180*Math.PI);
-                y = y - 25 * Math.sin(currentAngle/180*Math.PI);
+                x = x + 25 * Math.cos(currentAngle / 180 * Math.PI);
+                y = y - 25 * Math.sin(currentAngle / 180 * Math.PI);
                 drawLineAngle(railAngle, x, y, 25);
-                x = x + 25 * Math.cos(railAngle/180*Math.PI);
-                y = y - 25 * Math.sin(railAngle/180*Math.PI);
+                x = x + 25 * Math.cos(railAngle / 180 * Math.PI);
+                y = y - 25 * Math.sin(railAngle / 180 * Math.PI);
                 //ctx.moveTo(x + 2, y);
                 //ctx.lineTo(x + 50 - 2, y);
                 //x += 50;
-                currentAngle=railAngle;
+                currentAngle = railAngle;
             });
+            var x = x_start;
+            var y = y_start;
+            var currentAngle = 0;
             ctx.stroke();
-
+            angleData.forEach(railAngle => {
+                x = x + 25 * Math.cos(currentAngle / 180 * Math.PI);
+                y = y - 25 * Math.sin(currentAngle / 180 * Math.PI);
+                actions.forEach(function (item) {
+                    if (currentRail == item.floor) {
+                        if (item.eventType == 'Twirl') {
+                            ctx.drawImage(reversion, x - 13, y - 13, 25, 25);
+                        }
+                    }
+                })
+                x = x + 25 * Math.cos(railAngle / 180 * Math.PI);
+                y = y - 25 * Math.sin(railAngle / 180 * Math.PI);
+                //ctx.moveTo(x + 2, y);
+                //ctx.lineTo(x + 50 - 2, y);
+                //x += 50;
+                currentAngle = railAngle;
+                currentRail++;
+            });
         }
 
         function drawLineAngle(angle, x_begin, y_begin, len) {
@@ -99,10 +128,21 @@
                 ballColor1 = 'red';
                 ballColor2 = 'blue';
             }
-            x_start -= Math.cos(angleData[current_rail]/180*Math.PI)*50;
-            y_start+=Math.sin(angleData[current_rail]/180*Math.PI)*50;
+            x_start -= Math.cos(angleData[current_rail] / 180 * Math.PI) * 50;
+            y_start += Math.sin(angleData[current_rail] / 180 * Math.PI) * 50;
             angle = -angleData[current_rail];
             current_rail += 1;
+            actions.forEach(function (item) {
+                if (current_rail == item.floor) {
+                    if (item.eventType == 'Twirl') {
+                        if(counterclock){
+                            counterclock=false;
+                        }else{
+                            counterclock=true;
+                        }
+                    }
+                }
+            })
         }
 
         ballLoop();
