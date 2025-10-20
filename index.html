@@ -17,9 +17,10 @@
 
     <script>
         var angle = 0;
-        var bpm = 200;
+        var bpm = 80;
         var isPlaying = true;
-        var angleData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 90, 0, 0, 135, 0];
+        var angleData = [0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0];
+        angleData.push(angleData.at(-1));
         var ballColor1 = 'red';
         var ballColor2 = 'blue';
         var counterclock = false;
@@ -28,8 +29,18 @@
         var current_rail = 0;
         var actions = [
             { "floor": 3, "eventType": "Twirl" },
-            { "floor": 4, "eventType": "Twirl" },
-            { "floor": 6, "eventType": "SetSpeed", "speedType": "Multiplier", "beatsPerMinute": 100, "bpmMultiplier": 2, "angleOffset": 0 }
+            { "floor": 5, "eventType": "Twirl" },
+            { "floor": 7, "eventType": "Twirl" },
+            { "floor": 9, "eventType": "Twirl" },
+            { "floor": 11, "eventType": "Twirl" },
+            { "floor": 13, "eventType": "Twirl" },
+            { "floor": 15, "eventType": "Twirl" },
+            { "floor": 17, "eventType": "Twirl" },
+            { "floor": 19, "eventType": "Twirl" },
+            { "floor": 21, "eventType": "Twirl" },
+            { "floor": 23, "eventType": "Twirl" },
+            { "floor": 25, "eventType": "Twirl" },
+            { "floor": 27, "eventType": "Twirl" }
         ];
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -82,10 +93,10 @@
                                 else {
                                     ctx.drawImage(snail, x - 13, y - 13, 25, 25);
                                 }
-                            }else{
-                                if(item.beatsPerMinute>bpm){
+                            } else {
+                                if (item.beatsPerMinute > bpm) {
                                     ctx.drawImage(rabbit, x - 13, y - 13, 25, 25);
-                                }else{
+                                } else {
                                     ctx.drawImage(snail, x - 13, y - 13, 25, 25);
                                 }
                             }
@@ -145,7 +156,11 @@
             }
             x_start -= Math.cos(angleData[current_rail] / 180 * Math.PI) * 50;
             y_start += Math.sin(angleData[current_rail] / 180 * Math.PI) * 50;
-            angle = -angleData[current_rail];
+            if (!counterclock) {
+                angle = -angleData[current_rail];
+            } else {
+                angle = angleData[current_rail];
+            }
             current_rail += 1;
             actions.forEach(function (item) {
                 if (current_rail == item.floor) {
@@ -155,11 +170,11 @@
                         } else {
                             counterclock = true;
                         }
-                    }else if(item.eventType=='SetSpeed'){
-                        if(item.speedType=='Multiplier'){
-                            bpm=bpm*item.bpmMultiplier;
-                        }else{
-                            bpm=item.beatsPerMinute;
+                    } else if (item.eventType == 'SetSpeed') {
+                        if (item.speedType == 'Multiplier') {
+                            bpm = bpm * item.bpmMultiplier;
+                        } else {
+                            bpm = item.beatsPerMinute;
                         }
                     }
                 }
