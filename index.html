@@ -8,10 +8,12 @@
             font-family: NaiKaiFont;
             src: url('NaiKaiFont.ttf');
         }
+
         body {
             text-align: center;
         }
-        *{
+
+        * {
             font-family: NaiKaiFont;
         }
     </style>
@@ -30,8 +32,8 @@
         var bpm = 80;
         var isReady = false;
         var isPlaying = false;
-        var isFinished=false;
-        var isFailed=false;
+        var isFinished = false;
+        var isFailed = false;
         var angleData = [0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0];
         angleData.push(angleData.at(-1));
         var ballColor1 = 'red';
@@ -159,34 +161,42 @@
                 angle += Math.PI / 180 * 10;
                 drawRails();
                 drawBalls();
-                if (Date.now() - start_time <= 1000*(60/bpm)) {
+                if (!isFinished) {
+                    if (Date.now() - start_time <= 1000 * (60 / bpm)) {
+                        ctx.font = '50px NaiKaiFont';
+                        ctx.fillStyle = 'white';
+                        ctx.textAlign = 'center';
+                        ctx.baseLine = 'middle';
+                        ctx.fillText('3', 400, 250);
+                    } else if (Date.now() - start_time <= 2000 * (60 / bpm)) {
+                        ctx.font = '50px NaiKaiFont';
+                        ctx.fillStyle = 'white';
+                        ctx.textAlign = 'center';
+                        ctx.baseLine = 'middle';
+                        ctx.fillText('2', 400, 250);
+                    } else if (Date.now() - start_time <= 3000 * (60 / bpm)) {
+                        ctx.font = '50px NaiKaiFont';
+                        ctx.fillStyle = 'white';
+                        ctx.textAlign = 'center';
+                        ctx.baseLine = 'middle';
+                        ctx.fillText('1', 400, 250);
+                    } else if (Date.now() - start_time <= 4000 * (60 / bpm)) {
+                        ctx.font = '50px NaiKaiFont';
+                        ctx.fillStyle = 'white';
+                        ctx.textAlign = 'center';
+                        ctx.baseLine = 'middle';
+                        ctx.fillText('开始！', 400, 250);
+                    } else {
+                        isPlaying = true;
+                    }
+                }else{
                     ctx.font = '50px NaiKaiFont';
                     ctx.fillStyle = 'white';
                     ctx.textAlign = 'center';
                     ctx.baseLine = 'middle';
-                    ctx.fillText('3', 400, 250);
-                } else if(Date.now() - start_time <= 2000*(60/bpm)){
-                    ctx.font = '50px NaiKaiFont';
-                    ctx.fillStyle = 'white';
-                    ctx.textAlign = 'center';
-                    ctx.baseLine = 'middle';
-                    ctx.fillText('2', 400, 250);
-                } else if(Date.now() - start_time <= 3000*(60/bpm)){
-                    ctx.font = '50px NaiKaiFont';
-                    ctx.fillStyle = 'white';
-                    ctx.textAlign = 'center';
-                    ctx.baseLine = 'middle';
-                    ctx.fillText('1', 400, 250);
-                } else if(Date.now() - start_time <= 4000*(60/bpm)){
-                    ctx.font = '50px NaiKaiFont';
-                    ctx.fillStyle = 'white';
-                    ctx.textAlign = 'center';
-                    ctx.baseLine = 'middle';
-                    ctx.fillText('开始！', 400, 250);
-                } else {
-                    isPlaying = true;
+                    ctx.fillText('恭喜！', 400, 250);
                 }
-            }else {
+            } else {
                 ctx.font = '50px NaiKaiFont';
                 ctx.fillStyle = 'white';
                 ctx.textAlign = 'center';
@@ -235,9 +245,9 @@
                     }
                 }
             })
-            if(current_rail==angleData.length-1){
-                isFinished=true;
-                isPlaying=false;
+            if (current_rail == angleData.length - 1) {
+                isFinished = true;
+                isPlaying = false;
             }
         }
 
