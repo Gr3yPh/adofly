@@ -43,6 +43,7 @@
         var y_start = 250;
         var current_rail = 0;
         var start_time;
+        var deviation;
         var actions = [
             { "floor": 3, "eventType": "Twirl" },
             { "floor": 5, "eventType": "Twirl" },
@@ -147,10 +148,10 @@
 
             ctx.beginPath();
             if (!counterclock) {
-                ctx.arc(400 - 50 * Math.cos(angle), 250 - 50 * Math.sin(angle), 13, 0, Math.PI * 2);
+                ctx.arc(400 - 50 * Math.cos(angle/180*Math.PI), 250 - 50 * Math.sin(angle/180*Math.PI), 13, 0, Math.PI * 2);
             }
             else {
-                ctx.arc(400 - 50 * Math.cos(angle), 250 + 50 * Math.sin(angle), 13, 0, Math.PI * 2);
+                ctx.arc(400 - 50 * Math.cos(angle/180*Math.PI), 250 + 50 * Math.sin(angle/180*Math.PI), 13, 0, Math.PI * 2);
             }
             ctx.fillStyle = ballColor2;
             ctx.fill();
@@ -158,10 +159,11 @@
 
         function ballLoop() {
             if (isReady) {
-                angle += Math.PI / 180 * 10;
+                angle += 10;
+                angle = simplifyAngleToRange(angle);
                 drawRails();
                 drawBalls();
-                if (!isFinished) {
+                if (!isFinished&&!isPlaying) {
                     if (Date.now() - start_time <= 1000 * (60 / bpm)) {
                         ctx.font = '50px NaiKaiFont';
                         ctx.fillStyle = 'white';
@@ -189,7 +191,7 @@
                     } else {
                         isPlaying = true;
                     }
-                } else {
+                } else if(isFinished&&!isPlaying) {
                     ctx.font = '50px NaiKaiFont';
                     ctx.fillStyle = 'white';
                     ctx.textAlign = 'center';
@@ -202,7 +204,7 @@
                 ctx.fillStyle = 'white';
                 ctx.textAlign = 'center';
                 ctx.baseLine = 'middle';
-                ctx.fillText('点击开始', 400, 250);
+                ctx.fillText('点击或按任意键开始', 400, 250);
             }
             //console.log(simplifyAngleToRange(angle));
             setTimeout(ballLoop, 10000 / (3 * bpm));
@@ -212,9 +214,12 @@
         });
         canvas.addEventListener('click', function (event) { switchBall(); })
         function switchBall() {
-            console.log(180-angleData[current_rail]);
+            console.log('Current angle:', simplifyAngleToRange(angle),'; Target angle:', angleData[current_rail]);
             if (!isReady) { isReady = true; start_time = Date.now(); }
             if (!isPlaying) return;
+            deviation=Math.abs(Math.abs(angle)-(180-angleData[current_rail]));
+            console.log('Deviation:', deviation);
+            if(deviation>20) return;
             //if (Math.abs(Math.abs(simplifyAngleToRange(angle)) - (180 - angleData[current_rail])) > 20) return;
             if (current_rail > angleData.length - 2) return;
             if (ballColor1 == 'red') {
