@@ -22,12 +22,11 @@
 
 <body>
     <h1>Adofly</h1>
-    <p>用爱发电的冰与火之舞社区版游戏，仍在开发，特抽象</p>
-    <p>项目地址：<a href='https://gitee.com/gr3yph4ntom/adofly'>https://gitee.com/gr3yph4ntom/adofly</a></p>
-    <p>Made by 魇珩Gr3yPh4nton <a href='http://gr3yph.gt.tc'>http://gr3yph.gt.tc</a></p>
+    <p>用爱发电的冰与火之舞社区版游戏，仍在开发中，勿喷</p>
     <canvas id="gameCanvas" width="800" height="500" style="background-color: black;">
     </canvas>
-
+    <p>项目地址：<a href='https://gitee.com/gr3yph4ntom/adofly'>https://gitee.com/gr3yph4ntom/adofly</a></p>
+    <p>Made by 魇珩Gr3yPh4nton <a href='http://gr3yph.gt.tc'>http://gr3yph.gt.tc</a></p>
     <script>
         var angle = 180;
         var bpm = 80;
@@ -45,8 +44,8 @@
         var current_rail = 0;
         var start_time;
         var deviation;
-        var tooFast=0;
-        var acc=100;
+        var tooFast = 0;
+        var acc = 100;
         var actions = [
             { "floor": 3, "eventType": "Twirl" },
             { "floor": 5, "eventType": "Twirl" },
@@ -64,36 +63,36 @@
         ];
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        
+
         // 处理高DPI显示器
         function setupCanvas(canvas) {
             // 获取设备像素比
             const dpr = window.devicePixelRatio || 1;
             // 获取canvas的CSS显示尺寸
             const rect = canvas.getBoundingClientRect();
-            
+
             // 调整canvas的实际像素尺寸
             canvas.width = rect.width * dpr;
             canvas.height = rect.height * dpr;
-            
+
             // 缩放绘图上下文
             ctx.scale(dpr, dpr);
-            
+
             // 保持原有的绘图尺寸比例
             canvas.style.width = rect.width + 'px';
             canvas.style.height = rect.height + 'px';
         }
-        
+
         // 初始化canvas
         setupCanvas(canvas);
-        
+
         const reversion = new Image();
         reversion.src = 'image/counterclock.png';
         const rabbit = new Image();
         rabbit.src = 'image/rabbit.png';
         const snail = new Image();
         snail.src = 'image/snail.png';
-        function resetData(){
+        function resetData() {
             angle = 180;
             bpm = 80;
             isReady = false;
@@ -105,14 +104,16 @@
             deviation = 0;
             x_start = 400 - 25;
             y_start = 250;
-            tooFast=0;
-            acc=100;
+            tooFast = 0;
+            acc = 100;
         }
         function drawRails() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 绘制黑色边框（先画粗的黑色）
             ctx.beginPath();
-            ctx.strokeStyle = '#fca607';
-            ctx.lineWidth = 25;
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 29; // 边框稍粗
             var x = x_start;
             var y = y_start;
             var currentAngle = 0;
@@ -125,15 +126,34 @@
                 drawLineAngle(railAngle, x, y, 25);
                 x = x + 25 * Math.cos(railAngle / 180 * Math.PI);
                 y = y - 25 * Math.sin(railAngle / 180 * Math.PI);
-                //ctx.moveTo(x + 2, y);
-                //ctx.lineTo(x + 50 - 2, y);
-                //x += 50;
                 currentAngle = railAngle;
             });
-            var x = x_start;
-            var y = y_start;
-            var currentAngle = 0;
             ctx.stroke();
+
+            // 绘制黄色轨道（再画细的黄色在上面）
+            ctx.beginPath();
+            ctx.strokeStyle = '#fca607';
+            ctx.lineWidth = 25;
+            x = x_start;
+            y = y_start;
+            currentAngle = 0;
+            currentRail = 0;
+            angleData.forEach(railAngle => {
+                ctx.moveTo(x, y);
+                drawLineAngle(currentAngle, x, y, 25);
+                x = x + 25 * Math.cos(currentAngle / 180 * Math.PI);
+                y = y - 25 * Math.sin(currentAngle / 180 * Math.PI);
+                drawLineAngle(railAngle, x, y, 25);
+                x = x + 25 * Math.cos(railAngle / 180 * Math.PI);
+                y = y - 25 * Math.sin(railAngle / 180 * Math.PI);
+                currentAngle = railAngle;
+            });
+            ctx.stroke();
+
+            // 重置位置用于后续绘制
+            x = x_start;
+            y = y_start;
+            currentAngle = 0;
             angleData.forEach(railAngle => {
                 x = x + 25 * Math.cos(currentAngle / 180 * Math.PI);
                 y = y - 25 * Math.sin(currentAngle / 180 * Math.PI);
@@ -187,10 +207,10 @@
 
             ctx.beginPath();
             if (!counterclock) {
-                ctx.arc(400 - 50 * Math.cos(angle/180*Math.PI), 250 - 50 * Math.sin(angle/180*Math.PI), 13, 0, Math.PI * 2);
+                ctx.arc(400 - 50 * Math.cos(angle / 180 * Math.PI), 250 - 50 * Math.sin(angle / 180 * Math.PI), 13, 0, Math.PI * 2);
             }
             else {
-                ctx.arc(400 - 50 * Math.cos(angle/180*Math.PI), 250 + 50 * Math.sin(angle/180*Math.PI), 13, 0, Math.PI * 2);
+                ctx.arc(400 - 50 * Math.cos(angle / 180 * Math.PI), 250 + 50 * Math.sin(angle / 180 * Math.PI), 13, 0, Math.PI * 2);
             }
             ctx.fillStyle = ballColor2;
             ctx.fill();
@@ -203,17 +223,17 @@
                 drawRails();
                 drawBalls();
                 //console.log(angle,simplifyAngleToRange(180-angleData[current_rail]+60));
-                if(angle==simplifyAngleToRange(180-angleData[current_rail]+60) && isPlaying){
-                    isFailed=true;
-                    isFinished=true;
-                    isPlaying=false;
+                if (angle == simplifyAngleToRange(180 - angleData[current_rail] + 60) && isPlaying) {
+                    isFailed = true;
+                    isFinished = true;
+                    isPlaying = false;
                 }
-                if(tooFast>=3){
-                    isFailed=true;
-                    isFinished=true;
-                    isPlaying=false;
+                if (tooFast >= 3) {
+                    isFailed = true;
+                    isFinished = true;
+                    isPlaying = false;
                 }
-                if (!isFinished&&!isPlaying) {
+                if (!isFinished && !isPlaying) {
                     if (Date.now() - start_time <= 1000 * (60 / bpm)) {
                         ctx.font = '50px NaiKaiFont';
                         ctx.fillStyle = 'white';
@@ -241,22 +261,22 @@
                     } else {
                         isPlaying = true;
                     }
-                } else if(isFinished&&!isPlaying) {
-                    if(!isFailed){
+                } else if (isFinished && !isPlaying) {
+                    if (!isFailed) {
                         ctx.font = '50px NaiKaiFont';
                         ctx.fillStyle = 'white';
                         ctx.textAlign = 'center';
                         ctx.baseLine = 'middle';
                         ctx.fillText('恭喜！', 400, 250);
-                    }else{
+                    } else {
                         ctx.font = '50px NaiKaiFont';
                         ctx.fillStyle = 'white';
                         ctx.textAlign = 'center';
                         ctx.baseLine = 'middle';
-                        if(tooFast>=3){
+                        if (tooFast >= 3) {
                             ctx.fillText('按太快！', 400, 250);
-                        }else{
-                            ctx.fillText('完成度'+parseInt(current_rail/angleData.length*100)+'%', 400, 250);
+                        } else {
+                            ctx.fillText('完成度' + parseInt(current_rail / angleData.length * 100) + '%', 400, 250);
                         }
                     }
                 }
@@ -272,7 +292,7 @@
             ctx.fillStyle = 'white';
             ctx.textAlign = 'right';
             ctx.baseLine = 'top';
-            ctx.fillText('X-精准度：'+acc.toFixed(2)+'%', 750, 30);
+            ctx.fillText('X-精准度：' + acc.toFixed(2) + '%', 750, 30);
             //console.log(simplifyAngleToRange(angle));
             setTimeout(ballLoop, 10000 / (3 * bpm));
         }
@@ -281,28 +301,28 @@
         });
         canvas.addEventListener('click', function (event) { switchBall(); })
         function switchBall() {
-            if(isFinished){
+            if (isFinished) {
                 resetData();
                 return;
             }
-            console.log('Current angle:', simplifyAngleToRange(angle),'; Target angle:', angleData[current_rail]);
+            console.log('Current angle:', simplifyAngleToRange(angle), '; Target angle:', angleData[current_rail]);
             if (!isReady) { isReady = true; start_time = Date.now(); }
             if (!isPlaying) return;
-            deviation=Math.abs(Math.abs(angle)-(180-angleData[current_rail]));
+            deviation = Math.abs(Math.abs(angle) - (180 - angleData[current_rail]));
             console.log('Deviation:', deviation);
-            if(deviation>60){
+            if (deviation > 60) {
                 tooFast++;
-                acc-=100/80;
-            }else if(60<=deviation&&deviation>=45){
-                tooFast=0;
-                acc-=100/60;
-            }else if(30<=deviation&&deviation<=45){
-                tooFast=0;
-                acc-=100/25;
-            }else if(0<=deviation&&deviation<=30){
-                tooFast=0;
+                acc -= 100 / 80;
+            } else if (60 <= deviation && deviation >= 45) {
+                tooFast = 0;
+                acc -= 100 / 60;
+            } else if (30 <= deviation && deviation <= 45) {
+                tooFast = 0;
+                acc -= 100 / 25;
+            } else if (0 <= deviation && deviation <= 30) {
+                tooFast = 0;
             }
-            if(deviation>40){
+            if (deviation > 40) {
                 return;
             }
             //if (Math.abs(Math.abs(simplifyAngleToRange(angle)) - (180 - angleData[current_rail])) > 20) return;
@@ -321,7 +341,7 @@
             } else {
                 angle = angleData[current_rail];
             }
-            current_rail ++;
+            current_rail++;
             actions.forEach(function (item) {
                 if (current_rail == item.floor) {
                     if (item.eventType == 'Twirl') {
@@ -343,7 +363,7 @@
                 isFinished = true;
                 isPlaying = false;
             }
-            
+
         }
         /**
          * 使用诱导公式将角度简化到-180°到180°之间
