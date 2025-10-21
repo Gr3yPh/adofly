@@ -64,7 +64,29 @@
         ];
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-
+        
+        // 处理高DPI显示器
+        function setupCanvas(canvas) {
+            // 获取设备像素比
+            const dpr = window.devicePixelRatio || 1;
+            // 获取canvas的CSS显示尺寸
+            const rect = canvas.getBoundingClientRect();
+            
+            // 调整canvas的实际像素尺寸
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            
+            // 缩放绘图上下文
+            ctx.scale(dpr, dpr);
+            
+            // 保持原有的绘图尺寸比例
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+        }
+        
+        // 初始化canvas
+        setupCanvas(canvas);
+        
         const reversion = new Image();
         reversion.src = 'image/counterclock.png';
         const rabbit = new Image();
