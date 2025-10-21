@@ -223,7 +223,7 @@
                 drawRails();
                 drawBalls();
                 //console.log(angle,simplifyAngleToRange(180-angleData[current_rail]+60));
-                if (angle == simplifyAngleToRange(180 - angleData[current_rail] + 60) && isPlaying) {
+                if (angle == simplifyAngleToRange(180 - angleData[current_rail] + Math.abs(180-angleData[current_rail])/3) && isPlaying) {
                     isFailed = true;
                     isFinished = true;
                     isPlaying = false;
@@ -310,16 +310,16 @@
             if (!isPlaying) return;
             deviation = Math.abs(Math.abs(angle) - (180 - angleData[current_rail]));
             console.log('Deviation:', deviation);
-            if (deviation > 60) {
+            if (deviation > angleData[current_rail]/3) {
                 tooFast++;
                 acc -= 100 / 80;
-            } else if (60 <= deviation && deviation >= 45) {
+            } else if (deviation<=angleData[current_rail]/3 && deviation >= angleData[current_rail]/4) {
                 tooFast = 0;
                 acc -= 100 / 60;
-            } else if (30 <= deviation && deviation <= 45) {
+            } else if (angleData[current_rail]/6 <= deviation && deviation <= angleData[current_rail]/3) {
                 tooFast = 0;
                 acc -= 100 / 25;
-            } else if (0 <= deviation && deviation <= 30) {
+            } else if (0 <= deviation && deviation <= angleData[current_rail]/6) {
                 tooFast = 0;
             }
             if (deviation > 40) {
