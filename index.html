@@ -17,7 +17,7 @@
             font-family: NaiKaiFont;
         }
 
-        .chooseChart{
+        .chooseChart {
             margin: 20px;
             border: 1px solid black;
             padding: 10px;
@@ -36,6 +36,8 @@
         <br>
         <label for="musicInput">传音乐</label>
         <input type="file" id="musicInput">
+        <br>
+        <button id="loadFile">载入铺面</button>
     </div>
     <canvas id="gameCanvas" width="800" height="500" style="background-color: black;">
     </canvas>
@@ -43,11 +45,13 @@
     <p>Made by 魇珩Gr3yPh4nton <a href='http://gr3yph.gt.tc'>http://gr3yph.gt.tc</a></p>
     <script>
         var angle = 180;
+        var chart;
         var bpm = 80;
         var isReady = false;
         var isPlaying = false;
         var isFinished = false;
         var isFailed = false;
+        var loadedFile = false;
         var angleData = [0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0, 90, 180, 90, 0];
         angleData.push(angleData.at(-1));
         var ballColor1 = 'red';
@@ -108,19 +112,40 @@
         snail.src = 'image/snail.png';
         const beatAudio = new Audio('audio/beat.wav');
         function resetData() {
-            angle = 180;
-            bpm = 80;
-            isReady = false;
-            isPlaying = false;
-            isFinished = false;
-            isFailed = false;
-            current_rail = 0;
-            start_time = 0;
-            deviation = 0;
-            x_start = 400 - 25;
-            y_start = 250;
-            tooFast = 0;
-            acc = 100;
+            if (!loadedFile) {
+                angle = 180;
+                bpm = 80;
+                isReady = false;
+                isPlaying = false;
+                isFinished = false;
+                isFailed = false;
+                current_rail = 0;
+                start_time = 0;
+                deviation = 0;
+                x_start = 400 - 25;
+                y_start = 250;
+                tooFast = 0;
+                acc = 100;
+                counterclock = false;
+            }
+            else {
+                angle = 180;
+                bpm = chart.settings.bpm;
+                angleData = chart.angleData;
+                actions = chart.actions;
+                isReady = false;
+                isPlaying = false;
+                isFinished = false;
+                isFailed = false;
+                current_rail = 0;
+                start_time = 0;
+                deviation = 0;
+                x_start = 400 - 25;
+                y_start = 250;
+                tooFast = 0;
+                acc = 100;
+                counterclock = false;
+            }
         }
         function drawRails() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -235,18 +260,27 @@
             if (isReady) {
                 angle += 10;
                 angle = simplifyAngleToRange(angle);
-                deviation = Math.abs(Math.abs(angle) - (180 - angleData[current_rail]));
+                deviation = Math.abs(angle+angleData[current_rail]-180);
                 drawRails();
                 drawBalls();
-                if(deviation==0){
+                if (deviation == 0) {
                     console.log('Perfect!');
                     beatAudio.play();
                 }
                 //console.log(angle,simplifyAngleToRange(180-angleData[current_rail]+60));
-                if (angle == simplifyAngleToRange(180 - angleData[current_rail]+Math.abs((180-angleData[current_rail+1])-(180-angleData[current_rail]))/3) && isPlaying) {
-                    isFailed = true;
-                    isFinished = true;
-                    isPlaying = false;
+                if (!counterclock) {
+                    if (angle == simplifyAngleToRange(180 - (angleData[current_rail] - 60)) && isPlaying) {
+                        isFailed = true;
+                        isFinished = true;
+                        isPlaying = false;
+                    }
+                }
+                else {
+                    if (angle == simplifyAngleToRange(180 - angleData[current_rail] - 60) && isPlaying) {
+                        isFailed = true;
+                        isFinished = true;
+                        isPlaying = false;
+                    }
                 }
                 if (tooFast >= 3) {
                     isFailed = true;
@@ -328,24 +362,24 @@
             console.log('Current angle:', simplifyAngleToRange(angle), '; Target angle:', angleData[current_rail]);
             if (!isReady) { isReady = true; start_time = Date.now(); }
             if (!isPlaying) return;
-           
+
             console.log('Deviation:', deviation);
-            if (deviation > angleData[current_rail]/3) {
+            if (deviation > 60) {
                 tooFast++;
                 acc -= 100 / 80;
-            } else if (deviation<=angleData[current_rail]/3 && deviation >= angleData[current_rail]/4) {
+            } else if (deviation <= 60 && deviation >= 45) {
                 tooFast = 0;
                 acc -= 100 / 60;
-            } else if (angleData[current_rail]/6 <= deviation && deviation <= angleData[current_rail]/3) {
+            } else if (30 <= deviation && deviation <= 45) {
                 tooFast = 0;
                 acc -= 100 / 25;
-            } else if (0 <= deviation && deviation <= angleData[current_rail]/6) {
+            } else if (0 <= deviation && deviation <= 30) {
                 tooFast = 0;
             }
-            if (deviation > 40) {
+            if (deviation > 60) {
                 return;
             }
-            if(deviation>0){
+            if (deviation > 0) {
                 beatAudio.play();
             }
             //if (Math.abs(Math.abs(simplifyAngleToRange(angle)) - (180 - angleData[current_rail])) > 20) return;
@@ -388,6 +422,27 @@
             }
 
         }
+        document.getElementById('loadFile').addEventListener('click', function () {
+            if (!chartInput.files[0]) {
+                alert('您好歹传个谱吧');
+                return;
+            }
+            //将传入的铺面作为json解析 解析失败就弹窗提示
+            var reader = new FileReader();
+            reader.readAsText(chartInput.files[0]);
+            reader.onload = function () {
+                try {
+                    chart = JSON.parse(reader.result);
+                } catch (error) {
+                    alert('诶，铺面解析失败力...');
+                    return;
+                }
+                console.log(chart);
+                loadedFile = true;
+                resetData();
+            }
+        })
+
         /**
          * 使用诱导公式将角度简化到-180°到180°之间
          * @param {number} angle - 角度值（角度制）
@@ -407,6 +462,7 @@
 
             return angle;
         }
+
         ballLoop();
 
     </script>
