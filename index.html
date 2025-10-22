@@ -223,7 +223,7 @@
                 drawRails();
                 drawBalls();
                 //console.log(angle,simplifyAngleToRange(180-angleData[current_rail]+60));
-                if (angle == simplifyAngleToRange(180 - angleData[current_rail] + Math.abs(180-angleData[current_rail])/3) && isPlaying) {
+                if (angle == simplifyAngleToRange(180 - angleData[current_rail]+Math.abs((180-angleData[current_rail+1])-(180-angleData[current_rail]))/3) && isPlaying) {
                     isFailed = true;
                     isFinished = true;
                     isPlaying = false;
