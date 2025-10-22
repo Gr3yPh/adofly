@@ -331,6 +331,9 @@
             if (deviation > 40) {
                 return;
             }
+            if(deviation>0){
+                beatAudio.play();
+            }
             //if (Math.abs(Math.abs(simplifyAngleToRange(angle)) - (180 - angleData[current_rail])) > 20) return;
             if (current_rail > angleData.length - 2) return;
             if (ballColor1 == 'red') {
