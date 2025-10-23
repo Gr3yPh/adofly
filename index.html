@@ -257,6 +257,12 @@
 
         function ballLoop() {
             if (isReady) {
+                // 确保每次旋转5度，根据BPM计算间隔时间
+                // 对于每拍转半圈(180度)的要求，需要：
+                // - 每拍需要180/5=36次循环
+                // - 每拍时间为60000/BPM毫秒
+                // - 所以每次循环间隔为 (60000/BPM)/36 = 10000/(6*BPM) 毫秒
+                
                 if (!counterclock) {
                     angle += 5;
                 } else {
@@ -357,9 +363,15 @@
             ctx.fillStyle = 'white';
             ctx.textAlign = 'right';
             ctx.baseLine = 'top';
-            ctx.fillText('X-精准度：' + acc.toFixed(2) + '%', 750, 30);
+            // 将BPM和精准度竖直排列在右上角
+            ctx.fillText('BPM: ' + bpm, 750, 30);
+            ctx.fillText('精准度：' + acc.toFixed(2) + '%', 750, 60);
             //console.log(simplifyAngleToRange(angle));
-            setTimeout(ballLoop, 5000 / (3 * bpm));
+            // 计算每拍转半圈所需的间隔
+            // 每拍时间为 (60000 / bpm) 毫秒
+            // 每拍需要旋转180度，每次循环旋转5度，所以需要36次循环
+            // 因此每次循环间隔为 (60000 / bpm) / 36 = 10000 / (6 * bpm)
+            //setTimeout(ballLoop, 10000 / (6 * bpm));
         }
         document.addEventListener('keydown', function (event) {
             switchBall();
@@ -509,7 +521,7 @@
             return angle;
         }
         resetData();
-        ballLoop();
+        setInterval(ballLoop, 10000/(6*bpm));
 
     </script>
 </body>
