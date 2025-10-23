@@ -370,11 +370,11 @@
             if (autoplay) {
                 ctx.fillStyle = '#00FF00'; // 亮绿色
                 ctx.fillText('自动播放', 10, 20);
-                ctx.fillStyle = 'white';
             }
             
-            // 将BPM和精准度显示在右上角
+            // 将BPM和精准度显示在右上角，确保颜色为白色
             ctx.textAlign = 'right';
+            ctx.fillStyle = 'white';
             ctx.fillText('BPM: ' + bpm, 750, 20);
             ctx.fillText('精准度：' + acc.toFixed(2) + '%', 750, 50);
             //console.log(simplifyAngleToRange(angle));
