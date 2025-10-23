@@ -368,13 +368,13 @@
             console.log('Deviation:', deviation);
             if (deviation > 60) {
                 tooFast++;
-                acc -= 100 / angleData.length * 80;
+                acc -= 100 / (angleData.length * 80);
             } else if (deviation <= 60 && deviation >= 45) {
                 tooFast = 0;
-                acc -= 100 / angleData.length * 60;
+                acc -= 100 / (angleData.length * 60);
             } else if (30 <= deviation && deviation <= 45) {
                 tooFast = 0;
-                acc -= 100 / angleData.length * 25;
+                acc -= 100 / (angleData.length * 25);
             } else if (0 <= deviation && deviation <= 30) {
                 tooFast = 0;
             }
