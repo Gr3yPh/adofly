@@ -114,7 +114,7 @@
         function resetData() {
             if (!loadedFile) {
                 angle = 180;
-                bpm = 80;
+                bpm = 180;
                 isReady = false;
                 isPlaying = false;
                 isFinished = false;
@@ -127,12 +127,21 @@
                 tooFast = 0;
                 acc = 100;
                 counterclock = false;
+                console.log('使用默认BPM:', bpm);
             }
             else {
+                console.log('Chart settings:', chart.settings);
                 angle = 180;
-                bpm = chart.settings.bpm;
-                angleData = chart.angleData;
-                actions = chart.actions;
+                // 确保正确获取bpm值
+                if (chart.settings && chart.settings.bpm) {
+                    bpm = chart.settings.bpm;
+                    console.log('从JSON铺面加载BPM:', bpm);
+                } else {
+                    bpm = 180; // 默认为180
+                    console.log('铺面未设置BPM，使用默认值:', bpm);
+                }
+                angleData = chart.angleData || angleData;
+                actions = chart.actions || actions;
                 isReady = false;
                 isPlaying = false;
                 isFinished = false;
@@ -201,7 +210,7 @@
                     if (currentRail == item.floor) {
                         if (item.eventType == 'Twirl') {
                             ctx.drawImage(reversion, x - 13, y - 13, 25, 25);
-                        } else if (item.eventType = 'SetSpeed') {
+                        } else if (item.eventType == 'SetSpeed') {
                             if (item.speedType == 'Multiplier') {
                                 if (item.bpmMultiplier > 1) {
                                     ctx.drawImage(rabbit, x - 13, y - 13, 25, 25);
@@ -255,18 +264,21 @@
         }
 
         function ballLoop() {
+            // 计算角度增量，基于bpm动态调整
+            const angleIncrement = 60 * (bpm / 120); // 标准化到120 BPM为基准
+            
             if (isReady) {
                 if (!counterclock) {
-                    angle += 10;
+                    angle += angleIncrement;
                 } else {
-                    angle -= 10;
+                    angle -= angleIncrement;
                 }
                 angle = simplifyAngleToRange(angle);
                 deviation = Math.abs(Math.abs(angle + angleData[current_rail]) - 180);
                 drawRails();
                 drawBalls();
                 if (deviation == 0) {
-                    
+
                     //beatAudio.play();
                 }
                 //console.log(angle,simplifyAngleToRange(180-angleData[current_rail]+60));
@@ -349,8 +361,13 @@
             ctx.textAlign = 'right';
             ctx.baseLine = 'top';
             ctx.fillText('X-精准度：' + acc.toFixed(2) + '%', 750, 30);
+            // 添加BPM显示，方便调试
+            ctx.textAlign = 'left';
+            ctx.fillText('BPM: ' + bpm, 50, 30);
             //console.log(simplifyAngleToRange(angle));
-            setTimeout(ballLoop, 10000 / (3 * bpm));
+            // 确保定时器间隔也与BPM关联
+            const interval = Math.max(16, Math.floor(10000 / (3 * bpm))); // 最小16ms确保不超过60fps
+            setTimeout(ballLoop, interval);
         }
         document.addEventListener('keydown', function (event) {
             switchBall();
@@ -396,7 +413,7 @@
             x_start -= Math.cos(angleData[current_rail] / 180 * Math.PI) * 50;
             y_start += Math.sin(angleData[current_rail] / 180 * Math.PI) * 50;
             //if (!counterclock) {
-                angle = -angleData[current_rail];
+            angle = -angleData[current_rail];
             //} else {
             //    angle = angleData[current_rail];
             //}
@@ -435,37 +452,37 @@
             reader.onload = function () {
                 try {
                     console.log('尝试解析JSON文件内容:', reader.result.substring(0, 200) + '...'); // 显示前200个字符用于调试
-                    
+
                     // 增强的预处理方法
                     let jsonText = reader.result;
-                    
+
                     // 1. 处理BOM字符（如果存在）
                     if (jsonText.charCodeAt(0) === 0xFEFF) {
                         jsonText = jsonText.substring(1);
                         console.log('已移除BOM字符');
                     }
-                    
+
                     try {
                         // 尝试直接解析
                         chart = JSON.parse(jsonText);
                         console.log('JSON直接解析成功！');
                     } catch (firstError) {
                         console.log('直接解析失败，尝试预处理...');
-                        
+
                         // 预处理步骤1: 将单引号属性名转换为双引号
                         jsonText = jsonText.replace(/'(\w+)':/g, '"$1":');
-                        
+
                         // 预处理步骤2: 将属性名周围的空格去除（如果有）
                         jsonText = jsonText.replace(/"\s+([\w]+)\s*":/g, '"$1":');
-                        
+
                         // 预处理步骤3: 处理多余的逗号（对象末尾或数组末尾）
                         jsonText = jsonText.replace(/,\s*(\}\s*|\]\s*)/g, '$1');
-                        
+
                         // 再次尝试解析
                         chart = JSON.parse(jsonText);
                         console.log('预处理后JSON解析成功！');
                     }
-                    
+
                     loadedFile = true;
                     resetData();
                 } catch (error) {
