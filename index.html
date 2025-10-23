@@ -258,9 +258,9 @@
         function ballLoop() {
             if (isReady) {
                 if (!counterclock) {
-                    angle += 10;
+                    angle += 5;
                 } else {
-                    angle -= 10;
+                    angle -= 5;
                 }
                 angle = simplifyAngleToRange(angle);
                 deviation = Math.abs(Math.abs(angle + angleData[current_rail]) - 180);
@@ -351,7 +351,7 @@
             ctx.baseLine = 'top';
             ctx.fillText('X-精准度：' + acc.toFixed(2) + '%', 750, 30);
             //console.log(simplifyAngleToRange(angle));
-            setTimeout(ballLoop, 10000 / (3 * bpm));
+            setTimeout(ballLoop, 5000 / (3 * bpm));
         }
         document.addEventListener('keydown', function (event) {
             switchBall();
@@ -500,7 +500,7 @@
 
             return angle;
         }
-
+        resetData();
         ballLoop();
 
     </script>
