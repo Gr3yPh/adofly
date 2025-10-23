@@ -40,7 +40,8 @@
         <button id="loadFile">载入铺面</button>
     </div>
     <canvas id="gameCanvas" width="800" height="500" style="background-color: black;">
-    </canvas>
+    </canvas><br>
+    <input type="checkbox" id="autoplay">自动播放
     <p>项目地址：<a href='https://gitee.com/gr3yph4ntom/adofly'>https://gitee.com/gr3yph4ntom/adofly</a></p>
     <p>Made by 魇珩Gr3yPh4nton <a href='http://gr3yph.gt.tc'>http://gr3yph.gt.tc</a></p>
     <script>
@@ -64,6 +65,7 @@
         var deviation;
         var tooFast = 0;
         var acc = 100;
+        var autoplay = false;
         var actions = [
             { "floor": 3, "eventType": "Twirl" },
             { "floor": 5, "eventType": "Twirl" },
@@ -262,7 +264,7 @@
                 // - 每拍需要180/5=36次循环
                 // - 每拍时间为60000/BPM毫秒
                 // - 所以每次循环间隔为 (60000/BPM)/36 = 10000/(6*BPM) 毫秒
-                
+
                 if (!counterclock) {
                     angle += 5;
                 } else {
@@ -272,9 +274,10 @@
                 deviation = Math.abs(Math.abs(angle + angleData[current_rail]) - 180);
                 drawRails();
                 drawBalls();
-                if (deviation == 0) {
-
-                    //beatAudio.play();
+                if (deviation == 0 && isPlaying) {
+                    if (autoplay) {
+                        switchBall();
+                    }
                 }
                 //console.log(angle,simplifyAngleToRange(180-angleData[current_rail]+60));
                 if (!counterclock) {
@@ -326,13 +329,13 @@
                     }
                 } else if (isFinished && !isPlaying) {
                     if (!isFailed) {
-                        if(acc!=100){
-                        ctx.font = '50px XiaolaiMonoSC-Regular';
-                        ctx.fillStyle = 'white';
-                        ctx.textAlign = 'center';
-                        ctx.baseLine = 'middle';
-                        ctx.fillText('恭喜！', 400, 250);
-                        }else{
+                        if (acc != 100) {
+                            ctx.font = '50px XiaolaiMonoSC-Regular';
+                            ctx.fillStyle = 'white';
+                            ctx.textAlign = 'center';
+                            ctx.baseLine = 'middle';
+                            ctx.fillText('恭喜！', 400, 250);
+                        } else {
                             ctx.font = '50px XiaolaiMonoSC-Regular';
                             ctx.fillStyle = 'white';
                             ctx.textAlign = 'center';
@@ -360,12 +363,20 @@
                 ctx.fillText('点击或按任意键开始', 400, 250);
             }
             ctx.font = '20px XiaolaiMonoSC-Regular';
-            ctx.fillStyle = 'white';
-            ctx.textAlign = 'right';
+            ctx.textAlign = 'left';
             ctx.baseLine = 'top';
-            // 将BPM和精准度竖直排列在右上角
-            ctx.fillText('BPM: ' + bpm, 750, 30);
-            ctx.fillText('精准度：' + acc.toFixed(2) + '%', 750, 60);
+            
+            // 当自动播放开启时，显示亮绿色的"自动播放"提示
+            if (autoplay) {
+                ctx.fillStyle = '#00FF00'; // 亮绿色
+                ctx.fillText('自动播放', 10, 20);
+                ctx.fillStyle = 'white';
+            }
+            
+            // 将BPM和精准度显示在右上角
+            ctx.textAlign = 'right';
+            ctx.fillText('BPM: ' + bpm, 750, 20);
+            ctx.fillText('精准度：' + acc.toFixed(2) + '%', 750, 50);
             //console.log(simplifyAngleToRange(angle));
             // 计算每拍转半圈所需的间隔
             // 每拍时间为 (60000 / bpm) 毫秒
@@ -500,6 +511,14 @@
                 alert('文件读取失败，请检查文件是否可读');
             };
         })
+        document.getElementById('autoplay').addEventListener('click', function () {
+            autoplay = !autoplay;
+            if (autoplay) {
+                this.textContent = '关闭自动播放';
+            } else {
+                this.textContent = '开启自动播放';
+            }
+        })
 
         /**
          * 使用诱导公式将角度简化到-180°到180°之间
@@ -521,7 +540,7 @@
             return angle;
         }
         resetData();
-        setInterval(ballLoop, 10000/(6*bpm));
+        setInterval(ballLoop, 10000 / (6 * bpm));
 
     </script>
 </body>
