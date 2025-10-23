@@ -129,7 +129,7 @@
                 counterclock = false;
             }
             else {
-                console.log(chart.settings);
+                console.log('bpm:' + chart.settings.bpm);
                 angle = 180;
                 bpm = chart.settings.bpm;
                 angleData = chart.angleData;
@@ -320,11 +320,19 @@
                     }
                 } else if (isFinished && !isPlaying) {
                     if (!isFailed) {
+                        if(acc!=100){
                         ctx.font = '50px NaiKaiFont';
                         ctx.fillStyle = 'white';
                         ctx.textAlign = 'center';
                         ctx.baseLine = 'middle';
                         ctx.fillText('恭喜！', 400, 250);
+                        }else{
+                            ctx.font = '50px NaiKaiFont';
+                            ctx.fillStyle = 'white';
+                            ctx.textAlign = 'center';
+                            ctx.baseLine = 'middle';
+                            ctx.fillText('完美无瑕！', 400, 250);
+                        }
                     } else {
                         ctx.font = '50px NaiKaiFont';
                         ctx.fillStyle = 'white';
