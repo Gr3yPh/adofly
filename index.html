@@ -246,21 +246,23 @@
             ctx.fill();
 
             ctx.beginPath();
-            if (!counterclock) {
-                ctx.arc(400 - 50 * Math.cos(angle / 180 * Math.PI), 250 - 50 * Math.sin(angle / 180 * Math.PI), 13, 0, Math.PI * 2);
-            }
-            else {
-                ctx.arc(400 - 50 * Math.cos(angle / 180 * Math.PI), 250 + 50 * Math.sin(angle / 180 * Math.PI), 13, 0, Math.PI * 2);
-            }
+
+            ctx.arc(400 - 50 * Math.cos(angle / 180 * Math.PI), 250 - 50 * Math.sin(angle / 180 * Math.PI), 13, 0, Math.PI * 2);
+            //ctx.arc(400 - 50 * Math.cos(angle / 180 * Math.PI), 250 + 50 * Math.sin(angle / 180 * Math.PI), 13, 0, Math.PI * 2);
+
             ctx.fillStyle = ballColor2;
             ctx.fill();
         }
 
         function ballLoop() {
             if (isReady) {
-                angle += 10;
+                if (!counterclock) {
+                    angle += 10;
+                } else {
+                    angle -= 10;
+                }
                 angle = simplifyAngleToRange(angle);
-                deviation = Math.abs(angle+angleData[current_rail]-180);
+                deviation = Math.abs(Math.abs(angle + angleData[current_rail]) - 180);
                 drawRails();
                 drawBalls();
                 if (deviation == 0) {
@@ -366,13 +368,13 @@
             console.log('Deviation:', deviation);
             if (deviation > 60) {
                 tooFast++;
-                acc -= 100 / 80;
+                acc -= 100 / angleData.length * 80;
             } else if (deviation <= 60 && deviation >= 45) {
                 tooFast = 0;
-                acc -= 100 / 60;
+                acc -= 100 / angleData.length * 60;
             } else if (30 <= deviation && deviation <= 45) {
                 tooFast = 0;
-                acc -= 100 / 25;
+                acc -= 100 / angleData.length * 25;
             } else if (0 <= deviation && deviation <= 30) {
                 tooFast = 0;
             }
@@ -393,11 +395,11 @@
             }
             x_start -= Math.cos(angleData[current_rail] / 180 * Math.PI) * 50;
             y_start += Math.sin(angleData[current_rail] / 180 * Math.PI) * 50;
-            if (!counterclock) {
+            //if (!counterclock) {
                 angle = -angleData[current_rail];
-            } else {
-                angle = angleData[current_rail];
-            }
+            //} else {
+            //    angle = angleData[current_rail];
+            //}
             current_rail++;
             actions.forEach(function (item) {
                 if (current_rail == item.floor) {
