@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <style>
         @font-face {
-            font-family: NaiKaiFont;
-            src: url('NaiKaiFont.ttf');
+            font-family: XiaolaiMonoSC-Regular;
+            src: url('XiaolaiMonoSC-Regular.ttf');
         }
 
         body {
@@ -14,7 +14,7 @@
         }
 
         * {
-            font-family: NaiKaiFont;
+            font-family: XiaolaiMonoSC-Regular;
         }
 
         .chooseChart {
@@ -292,25 +292,25 @@
                 }
                 if (!isFinished && !isPlaying) {
                     if (Date.now() - start_time <= 1000 * (60 / bpm)) {
-                        ctx.font = '50px NaiKaiFont';
+                        ctx.font = '50px XiaolaiMonoSC-Regular';
                         ctx.fillStyle = 'white';
                         ctx.textAlign = 'center';
                         ctx.baseLine = 'middle';
                         ctx.fillText('3', 400, 250);
                     } else if (Date.now() - start_time <= 2000 * (60 / bpm)) {
-                        ctx.font = '50px NaiKaiFont';
+                        ctx.font = '50px XiaolaiMonoSC-Regular';
                         ctx.fillStyle = 'white';
                         ctx.textAlign = 'center';
                         ctx.baseLine = 'middle';
                         ctx.fillText('2', 400, 250);
                     } else if (Date.now() - start_time <= 3000 * (60 / bpm)) {
-                        ctx.font = '50px NaiKaiFont';
+                        ctx.font = '50px XiaolaiMonoSC-Regular';
                         ctx.fillStyle = 'white';
                         ctx.textAlign = 'center';
                         ctx.baseLine = 'middle';
                         ctx.fillText('1', 400, 250);
                     } else if (Date.now() - start_time <= 4000 * (60 / bpm)) {
-                        ctx.font = '50px NaiKaiFont';
+                        ctx.font = '50px XiaolaiMonoSC-Regular';
                         ctx.fillStyle = 'white';
                         ctx.textAlign = 'center';
                         ctx.baseLine = 'middle';
@@ -321,20 +321,20 @@
                 } else if (isFinished && !isPlaying) {
                     if (!isFailed) {
                         if(acc!=100){
-                        ctx.font = '50px NaiKaiFont';
+                        ctx.font = '50px XiaolaiMonoSC-Regular';
                         ctx.fillStyle = 'white';
                         ctx.textAlign = 'center';
                         ctx.baseLine = 'middle';
                         ctx.fillText('恭喜！', 400, 250);
                         }else{
-                            ctx.font = '50px NaiKaiFont';
+                            ctx.font = '50px XiaolaiMonoSC-Regular';
                             ctx.fillStyle = 'white';
                             ctx.textAlign = 'center';
                             ctx.baseLine = 'middle';
                             ctx.fillText('完美无瑕！', 400, 250);
                         }
                     } else {
-                        ctx.font = '50px NaiKaiFont';
+                        ctx.font = '50px XiaolaiMonoSC-Regular';
                         ctx.fillStyle = 'white';
                         ctx.textAlign = 'center';
                         ctx.baseLine = 'middle';
@@ -347,13 +347,13 @@
                 }
             } else {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.font = '50px NaiKaiFont';
+                ctx.font = '50px XiaolaiMonoSC-Regular';
                 ctx.fillStyle = 'white';
                 ctx.textAlign = 'center';
                 ctx.baseLine = 'middle';
-                ctx.fillText('点击或按任意鍵开始', 400, 250);
+                ctx.fillText('点击或按任意键开始', 400, 250);
             }
-            ctx.font = '20px NaiKaiFont';
+            ctx.font = '20px XiaolaiMonoSC-Regular';
             ctx.fillStyle = 'white';
             ctx.textAlign = 'right';
             ctx.baseLine = 'top';
