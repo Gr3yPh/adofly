@@ -46,7 +46,7 @@
     <p>项目地址：<a href='https://gitee.com/gr3yph4ntom/adofly'>https://gitee.com/gr3yph4ntom/adofly</a></p>
     <p>Made by 魇珩Gr3yPh4nton <a href='http://gr3yph.gt.tc'>http://gr3yph.gt.tc</a></p>
     <script>
-        var angle = 180;
+        var angle = 0;
         var chart;
         var bpm = 80;
         var isReady = false;
@@ -154,40 +154,24 @@
         function drawRails() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 绘制黑色边框（先画粗的黑色）
+            // 绘制黄色轨道
             ctx.beginPath();
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 29; // 边框稍粗
+            ctx.strokeStyle = '#fca607';
+            ctx.lineWidth = 25;
             var x = x_start;
             var y = y_start;
             var currentAngle = 0;
             var currentRail = 0;
-            angleData.forEach(railAngle => {
+            angleData.forEach((railAngle,railIndex) => {
                 ctx.moveTo(x, y);
+                if(Math.abs(current_rail-railIndex)  <= 5){
                 drawLineAngle(currentAngle, x, y, 25);
+                }
                 x = x + 25 * Math.cos(currentAngle / 180 * Math.PI);
                 y = y - 25 * Math.sin(currentAngle / 180 * Math.PI);
+                if(Math.abs(current_rail-railIndex)  <= 5){
                 drawLineAngle(railAngle, x, y, 25);
-                x = x + 25 * Math.cos(railAngle / 180 * Math.PI);
-                y = y - 25 * Math.sin(railAngle / 180 * Math.PI);
-                currentAngle = railAngle;
-            });
-            ctx.stroke();
-
-            // 绘制黄色轨道（再画细的黄色在上面）
-            ctx.beginPath();
-            ctx.strokeStyle = '#fca607';
-            ctx.lineWidth = 25;
-            x = x_start;
-            y = y_start;
-            currentAngle = 0;
-            currentRail = 0;
-            angleData.forEach(railAngle => {
-                ctx.moveTo(x, y);
-                drawLineAngle(currentAngle, x, y, 25);
-                x = x + 25 * Math.cos(currentAngle / 180 * Math.PI);
-                y = y - 25 * Math.sin(currentAngle / 180 * Math.PI);
-                drawLineAngle(railAngle, x, y, 25);
+                }
                 x = x + 25 * Math.cos(railAngle / 180 * Math.PI);
                 y = y - 25 * Math.sin(railAngle / 180 * Math.PI);
                 currentAngle = railAngle;
@@ -198,9 +182,10 @@
             x = x_start;
             y = y_start;
             currentAngle = 0;
-            angleData.forEach(railAngle => {
+            angleData.forEach((railAngle,railIndex) => {
                 x = x + 25 * Math.cos(currentAngle / 180 * Math.PI);
                 y = y - 25 * Math.sin(currentAngle / 180 * Math.PI);
+                if(Math.abs(current_rail-railIndex)<=5){
                 actions.forEach(function (item) {
                     if (currentRail == item.floor) {
                         if (item.eventType == 'Twirl') {
@@ -229,6 +214,7 @@
                         ctx.fill();
                     }
                 })
+            }
                 x = x + 25 * Math.cos(railAngle / 180 * Math.PI);
                 y = y - 25 * Math.sin(railAngle / 180 * Math.PI);
                 currentAngle = railAngle;
